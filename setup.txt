@@ -1,0 +1,11 @@
+Create Conda Env:
+    conda create -n yolo_11_custom python=3.12 -y
+    conda init
+    conda activate yolo_11_custom
+
+Pytorch:    
+    ensure pytorch is installed and torch.cuda.is_available() returns True
+    If not, get pip intsall link from: https://pytorch.org/get-started/locally/ 
+        (OR paste: pip3 install --upgrade torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121)
+
+pip install -r requirements.txt
