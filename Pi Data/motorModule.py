@@ -8,32 +8,51 @@ GPIO.setwarnings(False)
 # Motor Class to be initalized to each individual motor/output pins
 class Motor():
     """Args: int value corresponding to pin number on board"""
-    def __init__(self, Ena, In1, In2):
-        self.Ena = Ena
-        self.In1 = In1
-        self.In2 = In2
-        GPIO.setup(self.Ena, GPIO.OUT)
-        GPIO.setup(self.In1, GPIO.OUT)
-        GPIO.setup(self.In2, GPIO.OUT)
+    def __init__(self, EnaA, In1A, In2A, EnaB, In1B, In2B):
+        self.EnaA = EnaA
+        self.In1A = In1A
+        self.In2A = In2A
+
+        self.EnaB = EnaB
+        self.In1B = In1B
+        self.In2B = In2B
+
+        GPIO.setup(self.EnaA, GPIO.OUT)
+        GPIO.setup(self.In1A, GPIO.OUT)
+        GPIO.setup(self.In2A, GPIO.OUT)
+        GPIO.setup(self.EnaB, GPIO.OUT)
+        GPIO.setup(self.In1B, GPIO.OUT)
+        GPIO.setup(self.In2B, GPIO.OUT)
         
-        self.pwmA= GPIO.PWM(self.Ena, 100)
+        self.pwmA= GPIO.PWM(self.EnaA, 100)
         self.pwmA.start(0)
+        self.pwmB= GPIO.PWM(self.EnaB, 100)
+        self.pwmB.start(0)
 
     def forward(self, speed=50, t=0):
-        """Args: speed: int of total motor speed, t: length of time (ms)"""
+        """Args: speed: int of motor speed, t: length of time (ms)"""
         self.pwmA.ChangeDutyCycle(speed)
-        GPIO.output(self.In1, GPIO.LOW)
-        GPIO.output(self.In2, GPIO.HIGH)
+        GPIO.output(self.In1A, GPIO.HIGH)
+        GPIO.output(self.In2A, GPIO.LOW)
+        self.pwmB.ChangeDutyCycle(speed)
+        GPIO.output(self.In1B, GPIO.HIGH)
+        GPIO.output(self.In2B, GPIO.LOW)
         sleep(t)
 
     def reverse(self, speed, t=0):
+        """Args: speed: int of motor speed, t: length of time (ms)"""
         self.pwmA.ChangeDutyCycle(speed)
-        GPIO.output(self.In1, GPIO.HIGH)
-        GPIO.output(self.In2, GPIO.LOW)
+        GPIO.output(self.In1A, GPIO.LOW)
+        GPIO.output(self.In2A, GPIO.HIGH)
+        self.pwmB.ChangeDutyCycle(speed)
+        GPIO.output(self.In1B, GPIO.LOW)
+        GPIO.output(self.In2B, GPIO.HIGH)
         sleep(t)
+        
 
     def stop(self, time=0):
         self.pwmA.ChangeDutyCycle(0)
+        self.pwmB.ChangeDutyCycle(0)
         sleep(time)
 
 
@@ -59,10 +78,12 @@ pwmA.ChangeDutyCycle(0)
 """
 
 def main():    
-    motor1.forward(60, 2)
+    motor1.forward(30, 2)
+    motor1.reverse(30, 2)
+    motor1.stop()
     
 
 if __name__ == '__main__':
     #####Calling motor class object with pin inputs
-    motor1 = Motor(2,3,4)
+    motor1 = Motor(2,3,4,22,17,27)
     main()
