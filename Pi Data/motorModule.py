@@ -26,7 +26,7 @@ class Motor():
         GPIO.output(self.In2, GPIO.HIGH)
         sleep(t)
 
-    def reverse(self, speed):
+    def reverse(self, speed, t=0):
         self.pwmA.ChangeDutyCycle(speed)
         GPIO.output(self.In1, GPIO.HIGH)
         GPIO.output(self.In2, GPIO.LOW)
