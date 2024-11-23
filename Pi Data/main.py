@@ -12,16 +12,20 @@ kb.init() #init pygame to read key presses
 def main():
     if kb.getKey('w'):
         motor.move(0.40, 0, 0.1)
-        print("forward")
+        currSpeed, angle = motor.getMetrics()
+        print("forward, " + str(currSpeed) +", "+ str(angle))
     if kb.getKey('s'):
         motor.move(-0.40, 0, 0.1)
-        print("reverse")
+        currSpeed, angle = motor.getMetrics()
+        print("reverse" + str(currSpeed) +", "+ str(angle))
     if kb.getKey('a'):
         motor.move(0.30, -0.5, 0.1)
-        print("turn left")
+        currSpeed, angle = motor.getMetrics()
+        print("turn left" + str(currSpeed) +", "+ str(angle))
     if kb.getKey('d'):
         motor.move(0.30, 0.5, 0.1)
-        print("turn right")
+        currSpeed, angle = motor.getMetrics()
+        print("turn right" + str(currSpeed) +", "+ str(angle))
     else:
         motor.stop()
 

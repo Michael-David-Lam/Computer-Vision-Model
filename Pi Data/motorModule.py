@@ -34,7 +34,7 @@ class Motor():
         self.turnAngle = 0
 
     def move(self, speed=0.5, turn = 0, t=0):
-        """Args: speed: float of motor speed (0 - 1: forward, -1 - 0: reverse), turn: float of turning amount (0 - 1: right, -1 - 0: left) , t: length of time (ms)"""
+        """Args: speed: float of motor speed (0 - 1: forward, -1 - 0: reverse), turn: float of turning amount (0 - 1: left, -1 - 0: right) , t: length of time (ms)"""
         
         self.currentSpeed = speed
         self.turnAngle = turn
@@ -65,6 +65,7 @@ class Motor():
             #reverse left motors
             GPIO.output(self.In1A, GPIO.HIGH)
             GPIO.output(self.In2A, GPIO.LOW)
+            
             
         else:
              #if not turning left, forward left motors
