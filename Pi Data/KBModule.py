@@ -13,11 +13,13 @@ def getKey(keyName):
     pgKey = getattr(pygame, 'K_{}'.format(keyName)) #get key name from pygame format
     
     if key[pgKey]: #True when the passed keyName is the key currently pressed
-        answer = True   
-    pygame.display.update()
+        answer = True 
 
+    pygame.display.update()
     return answer
 
+#############################
+# For testing
 def main():
     if getKey('A'):
         print('A')
@@ -29,8 +31,6 @@ def main():
         print('D')   
     else:
         print('idle...') 
-
-
 
 if __name__ == '__main__':
     init()

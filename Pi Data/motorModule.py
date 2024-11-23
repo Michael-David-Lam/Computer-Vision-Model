@@ -29,26 +29,51 @@ class Motor():
         self.pwmB= GPIO.PWM(self.EnaB, 100)
         self.pwmB.start(0)
 
-    def forward(self, speed=50, t=0):
-        """Args: speed: int of motor speed, t: length of time (ms)"""
-        self.pwmA.ChangeDutyCycle(speed)
-        GPIO.output(self.In1A, GPIO.HIGH)
-        GPIO.output(self.In2A, GPIO.LOW)
-        self.pwmB.ChangeDutyCycle(speed)
-        GPIO.output(self.In1B, GPIO.HIGH)
-        GPIO.output(self.In2B, GPIO.LOW)
-        sleep(t)
-
-    def reverse(self, speed, t=0):
-        """Args: speed: int of motor speed, t: length of time (ms)"""
-        self.pwmA.ChangeDutyCycle(speed)
-        GPIO.output(self.In1A, GPIO.LOW)
-        GPIO.output(self.In2A, GPIO.HIGH)
-        self.pwmB.ChangeDutyCycle(speed)
-        GPIO.output(self.In1B, GPIO.LOW)
-        GPIO.output(self.In2B, GPIO.HIGH)
-        sleep(t)
+    def move(self, speed=0.5, turn = 0, t=0):
+        """Args: speed: float of motor speed (0 - 1: forward, -1 - 0: reverse), turn: float of turning amount (0 - 1: right, -1 - 0: left) , t: length of time (ms)"""
         
+        #Normalize speed and turn values 
+        speed = speed * 100
+        turn = turn * 100
+
+        #Set speed values for turn
+        rightSpeed = speed + turn
+        leftSpeed = speed - turn
+
+        #Limit left and right speed values
+        if rightSpeed > 100:
+            rightSpeed = 100
+        elif rightSpeed < -100:
+            rightSpeed -100
+        if leftSpeed > 100:
+            leftSpeed = 100
+        elif leftSpeed < -100:
+            leftSpeed -100
+
+        self.pwmA.ChangeDutyCycle(abs(leftSpeed))
+        self.pwmB.ChangeDutyCycle(abs(rightSpeed))
+
+        #Set pin values based on speed and turn args 
+        if leftSpeed > 0: #if turning left
+            #reverse left motors
+            GPIO.output(self.In1A, GPIO.LOW)
+            GPIO.output(self.In2A, GPIO.HIGH)
+            
+        else:
+             #if not turning left, forward left motors
+            GPIO.output(self.In1A, GPIO.HIGH)
+            GPIO.output(self.In2A, GPIO.LOW)
+        
+        if rightSpeed > 0: #if turning right
+            #reverse right motors
+            GPIO.output(self.In1B, GPIO.LOW)
+            GPIO.output(self.In2B, GPIO.HIGH)
+        else:
+            #if not turning right, forward right motors
+            GPIO.output(self.In1B, GPIO.HIGH)
+            GPIO.output(self.In2B, GPIO.LOW)
+
+        sleep(t)
 
     def stop(self, time=0):
         self.pwmA.ChangeDutyCycle(0)
@@ -57,32 +82,13 @@ class Motor():
 
 
 ################################
-"""
-######TEST MOTORS######
-
-Ena = 2
-In1 = 3
-In2 = 4
-GPIO.setup(Ena, GPIO.OUT)
-GPIO.setup(In1, GPIO.OUT)
-GPIO.setup(In2, GPIO.OUT)
-pwmA= GPIO.PWM(Ena, 100)
-pwmA.start(0)
-
-pwmA.ChangeDutyCycle(60)
-GPIO.output(In1, GPIO.LOW)
-GPIO.output(In2, GPIO.HIGH)
-sleep(2)
-pwmA.ChangeDutyCycle(0)
-
-"""
+# For testing functionality
 
 def main():    
     motor1.forward(30, 2)
     motor1.reverse(30, 2)
     motor1.stop()
     
-
 if __name__ == '__main__':
     #####Calling motor class object with pin inputs
     motor1 = Motor(2,3,4,22,17,27)
