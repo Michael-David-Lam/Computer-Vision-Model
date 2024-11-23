@@ -30,16 +30,22 @@ class Motor():
         self.pwmB= GPIO.PWM(self.EnaB, 100)
         self.pwmB.start(0)
 
+        self.currentSpeed = 0
+        self.turnAngle = 0
+
     def move(self, speed=0.5, turn = 0, t=0):
         """Args: speed: float of motor speed (0 - 1: forward, -1 - 0: reverse), turn: float of turning amount (0 - 1: right, -1 - 0: left) , t: length of time (ms)"""
         
+        self.currentSpeed = speed
+        self.turnAngle = turn
+
         #Normalize speed and turn values 
         speed = speed * 100
         turn = turn * 100
 
         #Set speed values for turn
-        rightSpeed = speed + turn
-        leftSpeed = speed - turn
+        rightSpeed = speed - turn
+        leftSpeed = speed + turn
 
         #Limit left and right speed values
         if rightSpeed > 100:
@@ -57,22 +63,24 @@ class Motor():
         #Set pin values based on speed and turn args 
         if leftSpeed > 0: #if turning left
             #reverse left motors
-            GPIO.output(self.In1A, GPIO.LOW)
-            GPIO.output(self.In2A, GPIO.HIGH)
+            GPIO.output(self.In1A, GPIO.HIGH)
+            GPIO.output(self.In2A, GPIO.LOW)
             
         else:
              #if not turning left, forward left motors
-            GPIO.output(self.In1A, GPIO.HIGH)
-            GPIO.output(self.In2A, GPIO.LOW)
+            GPIO.output(self.In1A, GPIO.LOW)
+            GPIO.output(self.In2A, GPIO.HIGH)
+           
         
         if rightSpeed > 0: #if turning right
             #reverse right motors
-            GPIO.output(self.In1B, GPIO.LOW)
-            GPIO.output(self.In2B, GPIO.HIGH)
-        else:
-            #if not turning right, forward right motors
             GPIO.output(self.In1B, GPIO.HIGH)
             GPIO.output(self.In2B, GPIO.LOW)
+            
+        else:
+            #if not turning right, forward right motors
+            GPIO.output(self.In1B, GPIO.LOW)
+            GPIO.output(self.In2B, GPIO.HIGH)
 
         sleep(t)
 
@@ -82,6 +90,9 @@ class Motor():
         self.pwmB.ChangeDutyCycle(0)
         sleep(time)
 
+    def getMetrics(self):
+        return self.currentSpeed, self.turnAngle 
+        #save to file; json or txt?
 
 ################################
 # For testing functionality
