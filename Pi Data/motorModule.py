@@ -7,7 +7,8 @@ GPIO.setwarnings(False)
 
 # Motor Class to be initalized to each individual motor/output pins
 class Motor():
-    """Args: int value corresponding to pin number on board"""
+    """Args: int value corresponding to pin number on board. Formatting: (EnA, In1, In2, EnB, In3, In4)
+    """
     def __init__(self, EnaA, In1A, In2A, EnaB, In1B, In2B):
         self.EnaA = EnaA
         self.In1A = In1A
@@ -76,6 +77,7 @@ class Motor():
         sleep(t)
 
     def stop(self, time=0):
+        """Stop Motors for t, time (ms)"""
         self.pwmA.ChangeDutyCycle(0)
         self.pwmB.ChangeDutyCycle(0)
         sleep(time)
