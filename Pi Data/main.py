@@ -58,10 +58,7 @@ def main():
             imgC = cM.getImgCenter(False)
             imgR = cM.getImgR(False)
             imgL = cM.getImgL(False)
-
-            collectData.saveData(imgC, steeringAngle)
-            collectData.saveData(imgR, steeringAngle)
-            collectData.saveData(imgL, steeringAngle)
+            collectData.saveData(imgC, imgR, imgL, steeringAngle, throttle, 0, (throttle*30.19))
         elif record == 2:
             print('Saving...')
             collectData.saveLog()

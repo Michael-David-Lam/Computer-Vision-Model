@@ -20,11 +20,17 @@ import cv2
 import os
 from datetime import datetime  
 
-global imgList, turnAngleList
+global imgListC, imgListR, imgListL, turnAngleList, throttleList, rThrottleList, speedListMPH
 folderCount =0
 count = 0
-imgList = []
+#Create image lists for each camera
+imgListC = []
+imgListR = []
+imgListL = []
 turnAngleList = []
+throttleList = []
+rThrottleList = []
+speedListMPH = []
 
 #Current Directory path
 PATH = os.path.join(os.getcwd(), 'Data')
@@ -36,27 +42,42 @@ newPath = PATH + '/Images'+str(folderCount)
 os.makedirs(newPath)
 
 #Save images in new directory
-#def #saveData(imgC, imgL, imgR, steeringAngle, throttle, reverse, speed):
-def saveData(img, steeringAngle):
+def saveData(imgC, imgR, imgL, steeringAngle, throttle, reverse, speed): 
     """Args: 3 images (left, center, right), turning angle (-1 to 1), throttle (0 to 1), reverse (0 to 1), speed(0-30.19) """
     global imgList, turnAngleList  
     currTime = datetime.now()
     timeStamp = str(datetime.timestamp(currTime)).replace('.', '')
-    fileName = os.path.join(newPath, f'Images_{timeStamp}_center.jpg')
-    cv2.imwrite(fileName, img)
-    imgList.append(fileName)
+    
+    fileNameC = os.path.join(newPath, f'Images_{timeStamp}_center.jpg')
+    fileNameR = os.path.join(newPath, f'Images_{timeStamp}_right.jpg')
+    fileNameL = os.path.join(newPath, f'Images_{timeStamp}_left.jpg')
+
+    cv2.imwrite(fileNameC, imgC)
+    cv2.imwrite(fileNameR, imgR)
+    cv2.imwrite(fileNameL, imgL)
+
+    imgListC.append(fileNameC) 
+    imgListR.append(fileNameR)
+    imgListL.append(fileNameL)
+
     turnAngleList.append(steeringAngle)
+    throttleList.append(throttle)
+    rThrottleList.append(reverse)
+    speedListMPH.append(speed)
 
 #Save log file of imgs(left, center, right), turning angle (-1 to 1), throttle (0 to 1), reverse (0 to 1), speed(0-30.19) 
 def saveLog():
-    global imgList, turnAngleList  
-    rawData = {'Image': imgList,
+    global imgListC, imgListR, imgListL, turnAngleList, throttleList, rThrottleList, speedListMPH 
+    rawData = {'ImageC': imgListC,
+               'ImageR': imgListR,
+               'ImageL': imgListL,
+               
                'Steering Angle': turnAngleList
                 }
     dataFrame = pd.DataFrame(rawData)
     dataFrame.to_csv(os.path.join(PATH, f'log_{str(folderCount)}.csv'), index=False, header=False)
     print('Log saved.')
-    print('Total Images: ', len(imgList))
+    print('Total Images: ', len(imgListC)*3)
 
 
 def main():
