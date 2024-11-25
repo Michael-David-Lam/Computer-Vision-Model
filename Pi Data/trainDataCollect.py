@@ -36,7 +36,7 @@ newPath = PATH + '/Images'+str(folderCount)
 os.makedirs(newPath)
 
 #Save images in new directory
-#def #saveData(img, img2, img3, steeringAngle, throttle, reverse, speed ):
+#def #saveData(imgC, imgL, imgR, steeringAngle, throttle, reverse, speed):
 def saveData(img, steeringAngle):
     """Args: 3 images (left, center, right), turning angle (-1 to 1), throttle (0 to 1), reverse (0 to 1), speed(0-30.19) """
     global imgList, turnAngleList  

@@ -15,47 +15,59 @@ kb.init() #init pygame to read key presses
 
  
 def main():
-    """
-    if kb.getKey('w'):
-        motor.move(0.40, 0, 0.1)
-        currSpeed, angle = motor.getMetrics()
-        print("forward, " + str(currSpeed) +", "+ str(angle))
-    if kb.getKey('s'):
-        motor.move(-0.40, 0, 0.1)
-        currSpeed, angle = motor.getMetrics()
-        print("reverse" + str(currSpeed) +", "+ str(angle))
-    if kb.getKey('a'):
-        motor.move(0.30, -0.5, 0.1)
-        currSpeed, angle = motor.getMetrics()
-        print("turn left" + str(currSpeed) +", "+ str(angle))
-    if kb.getKey('d'):
-        motor.move(0.30, 0.5, 0.1)
-        currSpeed, angle = motor.getMetrics()
-        print("turn right" + str(currSpeed) +", "+ str(angle))
-    else:
-        motor.stop()
-    """
+    
+    
+    
     record = 0
+    print('Press "e" to begin data capture')
     while True:
+
+        #Detect Key presses for motor control
+        if kb.getKey('w'):
+            motor.move(0.40, 0, 0.1)
+            currSpeed, angle = motor.getMetrics()
+            print("forward, " + str(currSpeed) +", "+ str(angle))
+        if kb.getKey('s'):
+            motor.move(-0.40, 0, 0.1)
+            currSpeed, angle = motor.getMetrics()
+            print("reverse" + str(currSpeed) +", "+ str(angle))
+        if kb.getKey('a'):
+            motor.move(0.30, -0.5, 0.1)
+            currSpeed, angle = motor.getMetrics()
+            print("turn left" + str(currSpeed) +", "+ str(angle))
+        if kb.getKey('d'):
+            motor.move(0.30, 0.5, 0.1)
+            currSpeed, angle = motor.getMetrics()
+            print("turn right" + str(currSpeed) +", "+ str(angle))
+        else:
+            motor.stop()
+
+        #Get speed and turn data
         throttle, steeringAngle = motor.getMetrics()
+        #Detect key press to start capture
         if kb.getKey('e'):
             #print recording started
             if record == 0: 
                 print('Starting Capture... press "e" to log data / stop')
-            record +=1
-        
+            record +=1        
             sleep(0.3)
-        print("record", str(record))
-        #capture frames
+
+        #Capture frames if 'e' was pressed, or save if pressed twice
         if record == 1: 
             print('Capturing...')
-            img = cM.getImgR(False)
-            collectData.saveData(img, steeringAngle)
+            imgC = cM.getImgCenter(False)
+            imgR = cM.getImgR(False)
+            imgL = cM.getImgL(False)
+
+            collectData.saveData(imgC, steeringAngle)
+            collectData.saveData(imgR, steeringAngle)
+            collectData.saveData(imgL, steeringAngle)
         elif record == 2:
-            print('saving...')
+            print('Saving...')
             collectData.saveLog()
+            print('Save Successful.')
             record = 0
-            print('Done.')
+            
 
 if __name__ == '__main__':
     
