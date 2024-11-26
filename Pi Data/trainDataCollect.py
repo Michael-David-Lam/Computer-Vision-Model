@@ -71,8 +71,10 @@ def saveLog():
     rawData = {'ImageC': imgListC,
                'ImageR': imgListR,
                'ImageL': imgListL,
-               
-               'Steering Angle': turnAngleList
+               'Steering Angle': turnAngleList,
+               "Throttle": throttleList,
+               "Reverse": rThrottleList,
+               "Speed": speedListMPH
                 }
     dataFrame = pd.DataFrame(rawData)
     dataFrame.to_csv(os.path.join(PATH, f'log_{str(folderCount)}.csv'), index=False, header=False)
