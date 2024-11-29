@@ -32,11 +32,11 @@ def main():
             currSpeed, angle = motor.getMetrics()
             print("reverse" + str(currSpeed) +", "+ str(angle))
         if kb.getKey('a'):
-            motor.move(0.30, -0.5, 0.1)
+            motor.move(0.3, -0.5, 0.1)
             currSpeed, angle = motor.getMetrics()
             print("turn left" + str(currSpeed) +", "+ str(angle))
         if kb.getKey('d'):
-            motor.move(0.30, 0.5, 0.1)
+            motor.move(0.3, 0.5, 0.1)
             currSpeed, angle = motor.getMetrics()
             print("turn right" + str(currSpeed) +", "+ str(angle))
         else:
@@ -55,9 +55,9 @@ def main():
         #Capture frames if 'e' was pressed, or save if pressed twice
         if record == 1: 
             print('Capturing...')
-            imgC = cM.getImgCenter(False)
-            imgR = cM.getImgR(False)
-            imgL = cM.getImgL(False)
+            imgC = cM.getImgCenter(False, [680,440])
+            imgR = cM.getImgR(False, [680,440])
+            imgL = cM.getImgL(False, [680,440])
             collectData.saveData(imgC, imgR, imgL, steeringAngle, throttle, 0, (throttle*30.19))
         elif record == 2:
             print('Saving...')
