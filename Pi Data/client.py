@@ -4,6 +4,14 @@ import socketio
 import time
 import cameraModule as cM
 
+#######
+'''
+Client collects frames from the front mounted cameras and sends those frames from the Raspberry Pi 
+to the Flask server over socketio. The Client then awaits for a response from the server with the 'inference' 
+data or 'control' inputs to the motors.
+'''
+#######
+
 model = YOLO('yolov8n.pt')  # Load YOLOv8 Nano model
 
 # Initialize the Socket.IO client

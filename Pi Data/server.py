@@ -6,6 +6,13 @@ from time import sleep
 import socketio 
 from flask import Flask
 
+#######
+'''
+Server handles incoming frames from the Raspberry Pi and send 'Detection' and 'Control events back to the Pi based on
+the information predicted by the YOLO model 
+'''
+#######
+
 # Create Flask and Socket.IO server
 app = Flask(__name__)
 sio = socketio.Server(cors_allowed_origins="*")  # Enable CORS for cross-origin requests

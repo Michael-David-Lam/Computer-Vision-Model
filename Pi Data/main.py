@@ -15,7 +15,7 @@ kb.init() #init pygame to read key presses
 
  
 def main():
-    
+    """Main function, using manual motor movement, for collecting the data (images and .csv) for lane detection training."""
     
     
     record = 0
@@ -42,7 +42,7 @@ def main():
         else:
             motor.stop()
 
-        #Get speed and turn data
+        #Get current speed and turn data
         throttle, steeringAngle = motor.getMetrics()
         #Detect key press to start capture
         if kb.getKey('e'):
