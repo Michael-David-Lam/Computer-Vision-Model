@@ -1,0 +1,10 @@
+ultralytics
+python-socketio
+websocket
+pandas
+numpy
+pygame
+
+#on the pi
+#picamera2
+#RPi-GPIO

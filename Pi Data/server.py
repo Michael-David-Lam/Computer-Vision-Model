@@ -21,17 +21,19 @@ def connect(sid, environ):
 @sio.event
 def disconnect(sid):
     print(f"Client disconnected: {sid}")
+    # Close cv windows on client disconnect
+    cv2.destroyAllWindows() 
 
 @sio.on('frame')
 def handle_frame(sid, data):
     # Decode the image from bytes
     nparr = np.frombuffer(data, np.uint8)
-    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
     # Perform YOLO inference
-    results = model(img)
+    predict = model(frame)
     detections = []
-    for result in results:
+    for result in predict:
         for box in result.boxes:
             detections.append({
                 'label': model.names[int(box.cls)],
@@ -39,17 +41,40 @@ def handle_frame(sid, data):
                 'bbox': box.xyxy.tolist()
             })
 
-    '''if detections['label'] == '20KPH':
-        #steering_angle=0
-        throttle = 0.2
-    '''
+            x1, y1, x2, y2 = map(int, box.xyxy[0])  # YOLO outputs xyxy format
+            label = model.names[int(box.cls[0])]   # Get the class label
+            confidence = box.conf[0]              # Get the confidence score
+            
+            # Draw the bounding box and label on the frame
+            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+            cv2.putText(
+                frame,
+                f"{label} {confidence:.2f}",
+                (x1, y1 - 10),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.5,
+                (0, 255, 0),
+                2,
+            )   
+
+            if label == 'person':
+                send_control(0.2)
+        
+    # Display the frame
+    cv2.imshow("Detections", frame)
+   
+    # Break the loop on 'q' key press
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+        cv2.destroyAllWindows()      
+
+    
     # Send detections back to the client
     sio.emit('inference', detections, to=sid)
-    #send_control(throttle)
+
 
 def send_control(throttle):
     sio.emit(
-        "inference",
+        "control",
         data={
             'throttle': throttle.__str__()
         },

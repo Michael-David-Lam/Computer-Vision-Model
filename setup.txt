@@ -9,3 +9,5 @@ Pytorch:
         (OR paste: pip3 install --upgrade torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121)
 
 pip install -r requirements.txt
+
+device detection on pi: v4l2-ctl --list-devices
