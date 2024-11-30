@@ -2,6 +2,10 @@ import socketio
 import random
 import time
 
+'''
+How the client should interact with the lane detection/deep learning model
+'''
+
 # Connect to the server
 sio = socketio.Client()
 
