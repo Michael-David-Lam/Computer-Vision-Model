@@ -1,3 +1,5 @@
 Remote connect to PI: IP: 10.0.0.239 (home network)
 	1) ssh or create vnc connection with tigervnc viewer
 	2) use pi username and password (cspvision) (Cpsvision1!)
+
+From Mobile Hotspot 172.20.10.7
