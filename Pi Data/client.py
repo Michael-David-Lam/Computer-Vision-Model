@@ -31,10 +31,10 @@ while True:
     frame = cM.getImgL(False, [680,440])
 
     # Limit the frame rate
-    #current_time = time.time()
-    #if current_time - last_frame_time < 1 / fps_limit:
-    #    continue
-    #last_frame_time = current_time
+    current_time = time.time()
+    if current_time - last_frame_time < 1 / fps_limit:
+        continue
+    last_frame_time = current_time
 
     # Encode frame as JPEG
     _, img_encoded = cv2.imencode('.jpg', frame)
@@ -43,9 +43,9 @@ while True:
     sio.emit('frame', img_encoded.tobytes())
 
     # Display the frame locally
-    cv2.imshow('Raspberry Pi Camera', frame)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+    #cv2.imshow('Raspberry Pi Camera', frame)
+    #if cv2.waitKey(1) & 0xFF == ord('q'):
+    #    break
 
-cv2.destroyAllWindows()
+#cv2.destroyAllWindows()
 sio.disconnect()
