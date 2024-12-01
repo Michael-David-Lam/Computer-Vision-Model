@@ -29,7 +29,7 @@ def connect(sid, environ):
 def disconnect(sid):
     print(f"Client disconnected: {sid}")
     # Close cv windows on client disconnect
-    cv2.destroyAllWindows() 
+    
 
 @sio.on('frame')
 def handle_frame(sid, data):
