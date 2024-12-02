@@ -70,13 +70,13 @@ def handle_frame(sid, data):
 
     # Decision making given current detected object label, sending control input based on decision
     if current_label == "Give Way" :
-        send_control(0.0, 0.0, 0.3)
+        send_control(0.0, 0.0, 3)
     elif current_label == "Beware of children":
-        send_control(0.2, 0.0, 0.1)
+        send_control(0.2, 0.0, 0.3)
     elif current_label == "50 mph speed limit":
-        send_control(0.8, 0.0, 0.1)
-    else:
         send_control(0.5, 0.0, 0.1)
+    else:
+        send_control(0.4, 0.0, 0.1)
      
     # Display the frame
     cv2.imshow("Detections", frame)
