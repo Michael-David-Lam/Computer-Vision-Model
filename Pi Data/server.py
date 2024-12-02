@@ -16,7 +16,7 @@ the information predicted by the YOLO model
 # Create Flask and Socket.IO server
 app = Flask(__name__)
 sio = socketio.Server(cors_allowed_origins="*")  # Enable CORS for cross-origin requests
-model = YOLO('roadsigns_yolo_v2.pt')  # Load YOLOv8 Nano model
+model = YOLO('roadsigns_yolo_v2_1280.pt')  # Load YOLOv8 Nano model
 
 # Wrap the Flask app with the Socket.IO app
 app = socketio.WSGIApp(sio, app)
