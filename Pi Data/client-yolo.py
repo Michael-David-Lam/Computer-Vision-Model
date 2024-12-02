@@ -60,7 +60,7 @@ def emit_telemetry():
                 motor.stop()
             else:
                 print('move')
-                motor.move(control_data['throttle'],control_data['steerAngle'], control_data['time'])
+                motor.move(control_data['throttle'], control_data['steerAngle'], control_data['time'])
         else:
             print("No control data received yet.")
 

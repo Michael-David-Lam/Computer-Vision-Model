@@ -40,7 +40,7 @@ def handle_frame(sid, data):
     current_label = None
 
     # Perform YOLO inference
-    predict = model(frame, conf=0.5)
+    predict = model(frame, conf=0.7)
     detections = []
     for result in predict:
         for box in result.boxes:
@@ -67,12 +67,17 @@ def handle_frame(sid, data):
             )   
             if current_label is None:
                 current_label = label
-    '''if current_label == 'person':
-        
-        send_control(0.5, 0.0, 0.5)
+
+    # Decision making given current detected object label, sending control input based on decision
+    if current_label == "Give Way" :
+        send_control(0.0, 0.0, 0.3)
+    elif current_label == "Beware of children":
+        send_control(0.2, 0.0, 0.1)
+    elif current_label == "50 mph speed limit":
+        send_control(0.8, 0.0, 0.1)
     else:
-        send_control(0.0, 0.0, 0.0)
-    '''    
+        send_control(0.5, 0.0, 0.1)
+     
     # Display the frame
     cv2.imshow("Detections", frame)
    
