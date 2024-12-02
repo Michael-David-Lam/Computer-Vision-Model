@@ -40,7 +40,7 @@ def handle_frame(sid, data):
     current_label = None
 
     # Perform YOLO inference
-    predict = model(frame, conf=0.7)
+    predict = model(frame, conf=0.5)
     detections = []
     for result in predict:
         for box in result.boxes:
