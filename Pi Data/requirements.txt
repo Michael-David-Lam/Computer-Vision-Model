@@ -7,4 +7,4 @@ pygame
 
 #on the pi
 #picamera2
-#RPi-GPIO
+#RPi-GPIO / rpi-lgpio (for pi 5)

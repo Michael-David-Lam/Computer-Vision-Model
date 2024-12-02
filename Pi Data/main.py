@@ -4,7 +4,7 @@ import cameraModule as cM
 import trainDataCollect as collectData
 import cv2 
 from time import sleep
-
+    
 ##################################
 ###Define Motor Config###
 # Pin Order for motor class connected to L298N board: EnA In1 In2 (left), EnB, In3, In4(right)
@@ -19,7 +19,7 @@ def main():
     
     
     record = 0
-    print('Press "e" to begin data capture')
+    print('Press "e" to begin data capture, q to stop')
     while True:
 
         #Detect Key presses for motor control
@@ -39,6 +39,8 @@ def main():
             motor.move(0.3, 0.5, 0.1)
             currSpeed, angle = motor.getMetrics()
             print("turn right" + str(currSpeed) +", "+ str(angle))
+        if kb.getKey('q'):
+            break
         else:
             motor.stop()
 
@@ -55,9 +57,9 @@ def main():
         #Capture frames if 'e' was pressed, or save if pressed twice
         if record == 1: 
             print('Capturing...')
-            imgC = cM.getImgCenter(False, [680,440])
-            imgR = cM.getImgR(False, [680,440])
-            imgL = cM.getImgL(False, [680,440])
+            imgC = cM.getImgC(True, [680,440])
+            imgR = cM.getImgR(True, [680,440])
+            imgL = cM.getImgL(True, [680,440])
             collectData.saveData(imgC, imgR, imgL, steeringAngle, throttle, 0, (throttle*30.19))
         elif record == 2:
             print('Saving...')

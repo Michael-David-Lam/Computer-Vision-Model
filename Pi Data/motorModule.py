@@ -99,8 +99,7 @@ class Motor():
 # For testing functionality
 
 def main():    
-    motor1.forward(30, 2)
-    motor1.reverse(30, 2)
+    motor1.move(0.40, 0, 0.3)
     motor1.stop()
     
 if __name__ == '__main__':
