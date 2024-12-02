@@ -1,3 +1,8 @@
+Try:
+1. sudo apt-get install python3-opencv
+2. sudo apt-get install python3-numpy
+
+Otherwise follow these steps to intall from source:
 1. sudo apt-get update && sudo apt-get upgrade && sudo rpi-update
 2. sudo nano /etc/dphys-swapfile
     CONF_SWAPSIZE=2048
