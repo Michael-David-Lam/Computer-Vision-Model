@@ -16,7 +16,7 @@ the information predicted by the YOLO model
 # Create Flask and Socket.IO server
 app = Flask(__name__)
 sio = socketio.Server(cors_allowed_origins="*")  # Enable CORS for cross-origin requests
-model = YOLO('yolov8n.pt')  # Load YOLOv8 Nano model
+model = YOLO('roadsigns_yolo_v2.pt')  # Load YOLOv8 Nano model
 
 # Wrap the Flask app with the Socket.IO app
 app = socketio.WSGIApp(sio, app)
@@ -27,6 +27,7 @@ def connect(sid, environ):
 
 @sio.event
 def disconnect(sid):
+    #cv2.destroyAllWindows()      
     print(f"Client disconnected: {sid}")
     # Close cv windows on client disconnect
     
@@ -36,9 +37,10 @@ def handle_frame(sid, data):
     # Decode the image from bytes
     nparr = np.frombuffer(data, np.uint8)
     frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    current_label = None
 
     # Perform YOLO inference
-    predict = model(frame)
+    predict = model(frame, conf=0.5)
     detections = []
     for result in predict:
         for box in result.boxes:
@@ -63,10 +65,14 @@ def handle_frame(sid, data):
                 (0, 255, 0),
                 2,
             )   
-
-            if label == 'person':
-                send_control(0.2)
+            if current_label is None:
+                current_label = label
+    '''if current_label == 'person':
         
+        send_control(0.5, 0.0, 0.5)
+    else:
+        send_control(0.0, 0.0, 0.0)
+    '''    
     # Display the frame
     cv2.imshow("Detections", frame)
    
@@ -79,11 +85,13 @@ def handle_frame(sid, data):
     sio.emit('inference', detections, to=sid)
 
 
-def send_control(throttle):
+def send_control(throttle, steerAngle, time):
     sio.emit(
         "control",
         data={
-            'throttle': throttle.__str__()
+            'throttle': throttle,
+            'steerAngle': steerAngle,
+            'time': time
         },
         skip_sid=True)
 

@@ -1,9 +1,16 @@
 from ultralytics import YOLO
+from MotorModule import Motor
 import cv2
 import socketio
 import time
 import cameraModule as cM
 
+##################################
+###Define Motor Config###
+# Pin Order for motor class connected to L298N board: EnA In1 In2 (left), EnB, In3, In4(right)
+motor = Motor(2,3,4, 22,17,27)
+##################################
+control_data = None
 #######
 '''
 Client collects frames from the front mounted cameras and sends those frames from the Raspberry Pi 
@@ -29,11 +36,13 @@ def disconnect():
 
 @sio.on('inference')
 def handle_inference(data):
-    print("Detections:", data)  # Print YOLO detections
+    pass#print("Detections:", data)  # Print YOLO detections
 
 @sio.on('control')
 def hanlde_control(data):
-    print("Control Data: ", data)
+    #print("Control Data: ", data)
+    global control_data
+    control_data = data
 
 def emit_telemetry():
     """Def"""
@@ -42,6 +51,18 @@ def emit_telemetry():
 
     while True:
         frame = cM.getImgR(False, [680,440])
+        global control_data
+
+        if control_data is not None:
+            print("Telemetry using control data:", control_data)
+            if control_data['throttle'] == 0.0:
+                print('stop')
+                motor.stop()
+            else:
+                print('move')
+                motor.move(control_data['throttle'],control_data['steerAngle'], control_data['time'])
+        else:
+            print("No control data received yet.")
 
         # Limit the frame rate
         current_time = time.time()
