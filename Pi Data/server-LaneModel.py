@@ -12,11 +12,15 @@ from flask import Flask
 from io import BytesIO
 from keras.models import load_model
 import utils
+import cv2
 
 
 # Initialize our socketio server
-sio = socketio.Server()
 app = Flask(__name__)
+sio = socketio.Server(cors_allowed_origins="*")
+
+# Wrap the Flask app with the Socket.IO app
+app = socketio.WSGIApp(sio, app)
 
 model = None
 
@@ -24,6 +28,19 @@ model = None
 MAX_SPEED = 25
 MIN_SPEED = 10
 speed_limit = MAX_SPEED
+
+
+# A connect event that if we get means that the simulator is successfully connected to this python app.
+@sio.event
+def connect(sid, environ):
+    print("Connected to the Pi.")
+    send_control(0)
+
+@sio.event
+def disconnect(sid):
+    #cv2.destroyAllWindows()      
+    print(f"Client disconnected: {sid}")
+    # Close cv windows on client disconnect
 
 # This event comes from the simulator many times per second along with the car data.
 # We process the data and calculate some control values and then send them back to the simulator to drive the car.
@@ -38,7 +55,9 @@ def telemetry(sid, data):
         #speed = float(data["speed"]) # we can use this to speed up or down depending on the speed limit or signs and objects detected
 
         # We used 3 images for training (left, center, right), but here we only predict with the center camera.
-        image = Image.open(BytesIO(base64.b64decode(data["image"])))
+        nparr = np.frombuffer(data, np.uint8)
+        image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        #image = Image.open(BytesIO(base64.b64decode(data["image"])))
 
         image = np.asarray(image)       # from PIL image to numpy array
         image = utils.preprocess(image) # apply the preprocessing
@@ -63,18 +82,13 @@ def telemetry(sid, data):
         print(e)
 
 
-# A connect event that if we get means that the simulator is successfully connected to this python app.
-@sio.on('connect')
-def connect(sid, environ):
-    print("Connected to the simulator.")
-    send_control(0, 0)
 
 # This function sends control data (steering angle & throttle) to the simulator. The car will be driven depending on these values.
 def send_control(steering_angle):#, throttle):
     sio.emit(
         "steer",
         data={
-            'steering_angle': steering_angle.__str__()
+            'steering_angle': steering_angle
             #,'throttle': throttle.__str__()
         },
         skip_sid=True)
@@ -85,5 +99,4 @@ if __name__ == '__main__':
 
     # Start the socketio server
     #eventlet.wsgi.server(eventlet.listen(('', 4567)), socketio.Middleware(sio, app))
-    import eventlet
     eventlet.wsgi.server(eventlet.listen(('0.0.0.0', 5000)), app)

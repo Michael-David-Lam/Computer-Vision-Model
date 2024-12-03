@@ -1,4 +1,4 @@
-from ultralytics import YOLO
+#from ultralytics import YOLO
 from MotorModule import Motor
 import cv2
 import socketio
@@ -19,7 +19,7 @@ data or 'control' inputs to the motors.
 '''
 #######
 
-model = YOLO('yolov8n.pt')  # Load YOLOv8 Nano model
+#model = YOLO('yolov8n.pt')  # Load YOLOv8 Nano model
 
 # Initialize the Socket.IO client
 sio = socketio.Client()
