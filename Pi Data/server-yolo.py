@@ -2,7 +2,7 @@ from ultralytics import YOLO
 import cv2 
 import numpy as np
 from time import sleep
-
+import eventlet
 import socketio 
 from flask import Flask
 
@@ -101,5 +101,5 @@ def send_control(throttle, steerAngle, time):
         skip_sid=True)
 
 if __name__ == '__main__':
-    import eventlet
+
     eventlet.wsgi.server(eventlet.listen(('0.0.0.0', 5000)), app)
