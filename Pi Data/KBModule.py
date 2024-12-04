@@ -4,10 +4,11 @@ def init():
     pygame.init()
     window = pygame.display.set_mode((100, 100))
 
-
+# Allow us to get keypresses 
 def getKey(keyName):
     """Return true if the passed string is the key being pressed, according to pygame formatting"""
     answer = False
+    # Run Pygame event listener
     for event in pygame.event.get():
         pass
     key = pygame.key.get_pressed()

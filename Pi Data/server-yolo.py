@@ -16,7 +16,7 @@ the information predicted by the YOLO model
 # Create Flask and Socket.IO server
 app = Flask(__name__)
 sio = socketio.Server(cors_allowed_origins="*")  # Enable CORS for cross-origin requests
-model = YOLO('roadsigns_yolo_v2_1280.pt')  # Load YOLOv8 Nano model
+model = YOLO('roadsigns_yolo_s_v2.pt')  # Load YOLOv8 Nano model
 
 # Wrap the Flask app with the Socket.IO app
 app = socketio.WSGIApp(sio, app)
@@ -26,8 +26,7 @@ def connect(sid, environ):
     print(f"Client connected: {sid}")
 
 @sio.event
-def disconnect(sid):
-    #cv2.destroyAllWindows()      
+def disconnect(sid):    
     print(f"Client disconnected: {sid}")
     # Close cv windows on client disconnect
     
@@ -40,7 +39,7 @@ def handle_frame(sid, data):
     current_label = None
 
     # Perform YOLO inference
-    predict = model(frame, conf=0.5)
+    predict = model(frame, conf=0.6)
     detections = []
     for result in predict:
         for box in result.boxes:
@@ -70,11 +69,11 @@ def handle_frame(sid, data):
 
     # Decision making given current detected object label, sending control input based on decision
     if current_label == "Give Way" :
-        send_control(0.0, 0.0, 3)
+        send_control(0.0, 0.0, 0.3)
     elif current_label == "Beware of children":
-        send_control(0.2, 0.0, 0.3)
+        send_control(0.3, 0.0, 0.3)
     elif current_label == "50 mph speed limit":
-        send_control(0.5, 0.0, 0.1)
+        send_control(0.7, 0.0, 0.1)
     else:
         send_control(0.4, 0.0, 0.1)
      
@@ -85,11 +84,10 @@ def handle_frame(sid, data):
     if cv2.waitKey(1) & 0xFF == ord("q"):
         cv2.destroyAllWindows()      
 
-    
     # Send detections back to the client
     sio.emit('inference', detections, to=sid)
 
-
+# Send control data to client to then be inputed to drive the car
 def send_control(throttle, steerAngle, time):
     sio.emit(
         "control",
@@ -101,5 +99,4 @@ def send_control(throttle, steerAngle, time):
         skip_sid=True)
 
 if __name__ == '__main__':
-
     eventlet.wsgi.server(eventlet.listen(('0.0.0.0', 5000)), app)

@@ -7,7 +7,7 @@ import cv2
 import cameraModule as cM
 
 '''
-How the client should interact with the lane detection/deep learning model
+How the client should interact with the Dave2 model
 '''
 
 ##################################
@@ -28,6 +28,7 @@ def connect():
     # Start emitting telemetry data
     emit_telemetry()
 
+# This will run when we are disconnecte from the server
 @sio.event
 def disconnect():
     print("Disconnected from the server")
@@ -48,13 +49,14 @@ def emit_telemetry():
         frame = cM.getImgR(False, [680,440])
         global steer_data
 
+        # Get steering data and move motors 
         if steer_data is not None:
             print("Telemetry using control data:", steer_data)
             motor.move(0.3, steer_data, 0.1)
-
         else:
             print("No control data received yet.")
 
+        # Limit the frame rate
         current_time = time.time()
         if current_time - last_frame_time < 1 / fps_limit:
             continue
