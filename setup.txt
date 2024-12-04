@@ -8,6 +8,6 @@ Pytorch:
     If not, get pip intsall link from: https://pytorch.org/get-started/locally/ 
         (OR paste: pip3 install --upgrade torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121)
 
-pip install -r requirements.txt
+pip install -r requirements.txt in Pi Data Directory
 
 device detection on pi: v4l2-ctl --list-devices

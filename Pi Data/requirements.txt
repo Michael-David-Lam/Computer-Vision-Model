@@ -1,10 +1,11 @@
 ultralytics
 python-socketio
-websocket
+socketio
+eventlet
 pandas
 numpy
 pygame
+flask
 
-#on the pi
-#picamera2
-#RPi-GPIO / rpi-lgpio (for pi 5)
+#On the Rasberry Pi
+    #RPi-GPIO / rpi-lgpio (for pi 5)
