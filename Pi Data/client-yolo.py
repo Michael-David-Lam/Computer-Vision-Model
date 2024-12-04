@@ -44,8 +44,8 @@ def hanlde_control(data):
     global control_data
     control_data = data
 
+# Emit telemetry data 5 times per second. Here we are sending the car data to the server to then calculate a steering angle for us.
 def emit_telemetry():
-    """Def"""
     fps_limit = 5  # Limit to 5 FPS
     last_frame_time = 0
 
@@ -53,11 +53,12 @@ def emit_telemetry():
         frame = cM.getImgR(False, [680,440])
         global control_data
 
+        # Get control data and move motors based on values
         if control_data is not None:
             print("Telemetry using control data:", control_data)
             if control_data['throttle'] == 0.0:
                 print('stop')
-                motor.stop()
+                motor.stop(control_data['time'])
             else:
                 print('move')
                 motor.move(control_data['throttle'], control_data['steerAngle'], control_data['time'])

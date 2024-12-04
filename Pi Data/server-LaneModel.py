@@ -52,13 +52,9 @@ def telemetry(sid, data):
         return sio.emit('manual', data={}, skip_sid=True)
 
     try:
-        #speed = float(data["speed"]) # we can use this to speed up or down depending on the speed limit or signs and objects detected
-
         # We used 3 images for training (left, center, right), but here we only predict with the center camera.
         nparr = np.frombuffer(data, np.uint8)
         image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        #image = Image.open(BytesIO(base64.b64decode(data["image"])))
-
         image = np.asarray(image)       # from PIL image to numpy array
         image = utils.preprocess(image) # apply the preprocessing
         image = np.array([image])       # the model expects 4D array
@@ -66,25 +62,17 @@ def telemetry(sid, data):
         # Predicting the steering angle for the current center image
         steering_angle = float(model.predict(image, batch_size=1))
 
-        # lower the throttle as the speed increases
-        # if the speed is above the current speed limit, we are on a downhill.
-        # make sure we slow down first and then go back to the original max speed.
-        '''global speed_limit
-        if speed > speed_limit:
-            speed_limit = MIN_SPEED  # slow down
-        else:
-            speed_limit = MAX_SPEED
-        throttle = 1.0 - steering_angle**2 - (speed/speed_limit)**2
-        '''
-        print(f"Sending the calculated steering angle ({steering_angle})") #and throttle({throttle}) to the simulation...")
-        send_control(steering_angle)#, throttle)
+        print(f"Sending the calculated steering angle ({steering_angle})")
+
+        # Send angle to client
+        send_control(steering_angle) 
     except Exception as e:
         print(e)
 
 
 
-# This function sends control data (steering angle & throttle) to the simulator. The car will be driven depending on these values.
-def send_control(steering_angle):#, throttle):
+# This function sends control data, the car will be driven depending on these values.
+def send_control(steering_angle): 
     sio.emit(
         "steer",
         data={
@@ -98,5 +86,4 @@ if __name__ == '__main__':
     model = load_model("./model-007.h5", compile=False)
 
     # Start the socketio server
-    #eventlet.wsgi.server(eventlet.listen(('', 4567)), socketio.Middleware(sio, app))
     eventlet.wsgi.server(eventlet.listen(('0.0.0.0', 5000)), app)
