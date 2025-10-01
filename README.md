@@ -1,6 +1,6 @@
 # Computer Vision Project - Autonomous Raspberry Pi Robot 🚗🔍
 
-This project showcases a complete computer vision pipeline for an autonomous robot car powered by a Raspberry Pi and webcam.  
+This project houses a complete computer vision pipeline for an autonomous robot car powered by a Raspberry Pi and webcam.  
 The system is designed to detect road signs in real time and make navigation decisions using a trained YOLO model.  
 
 ### How it works:
